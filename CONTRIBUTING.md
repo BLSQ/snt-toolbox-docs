@@ -6,6 +6,8 @@ I have created a simple static documentation website using **GitHub Pages**. You
 
 This is currently a template to help us evaluate the workflow and "feel" of the documentation. Most of the content still needs to be migrated or added—please see the guide below on how we can collaborate on this.
 
+For the actual content, refer to this ![Google Docs](https://docs.google.com/document/d/15TrBn2AD21zK_-ZU7xt1GTnf2_3LT5hHXGQ981hx8wU/edit?usp=sharing) !
+
 ---
 
 ## 💡 Points for Discussion
