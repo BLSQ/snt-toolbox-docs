@@ -9,4 +9,4 @@ nav_order: 2
 ### 1.1 What is the SNT Toolbox?
 [Insert description here]
 
-![graphical overview of the snt process and toolbox](image1.jpg)
+![graphical overview of the snt process and toolbox](image1.png)
