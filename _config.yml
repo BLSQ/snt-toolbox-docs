@@ -3,16 +3,20 @@ title: SNT Toolbox Manual
 description: A step-by-step guide for SNT Analytics in OpenHexa.
 
 # Theme settings
-# We use the remote_theme plugin to load Just the Docs
 remote_theme: just-the-docs/just-the-docs
 
 # Plugins
 plugins:
   - jekyll-remote-theme
+  - jekyll-seo-tag
 
-# Back to top link
-back_to_top: true
-back_to_top_text: "Back to top"
+# This tells the theme to use the side-nav
+nav_sort: nav_order
 
-# Color scheme (can be 'light' or 'dark')
+# Color scheme
 color_scheme: light
+
+# Search settings
+search_enabled: true
+search:
+  rel_url: true
