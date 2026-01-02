@@ -7,7 +7,8 @@ has_children: true
 
 # 1. About the SNT Toolbox
 
-### 1.1 What is the SNT Toolbox?
-[Insert description here]
+This section covers the fundamentals of the SNT Toolbox. Use the sub-menu in the sidebar or the links below to explore specific topics.
+
+![Go to subsection 1.1. ... ](01_01_description.md)
 
 ![graphical overview of the snt process and toolbox](image1.png)
