@@ -2,7 +2,7 @@
 
 Hi all!
 
-I have created a simple static documentation website using **GitHub Pages**. You can view the live site here: [ADD LINK HERE]
+I have created a simple static documentation website using **GitHub Pages**. You can view the live site here: https://viz.bluesquare.org/snt-toolbox-docs/
 
 This is currently a template to help us evaluate the workflow and "feel" of the documentation. Most of the content still needs to be migrated or added—please see the guide below on how we can collaborate on this.
 
