@@ -1,10 +1,27 @@
 # SNT Toolbox Manual 🛠️
 
-This is a simplified version to test our navigation links. 🔗
+Welcome to the official user guide for the SNT Toolbox.
 
-* [Jump to Section 1: About the SNT Toolbox](#1-about-the-snt-toolbox)
+## Table of Contents
+* [1. About the SNT Toolbox](#1-about-the-snt-toolbox)
+* [2. Getting Started with OpenHexa](#2-getting-started-with-openhexa)
+* [3. Jump Start your Workspace](#3-jump-start-your-workspace)
+* [4. Extracting Malaria Indicators](#4-extracting-malaria-indicators)
 
 ---
 
 ## 1. About the SNT Toolbox
-This is the test section. If the link at the top is working, clicking it should scroll your browser right here!
+### 1.1 What is the SNT Toolbox?
+[Insert description here]
+
+---
+
+## 2. Getting Started with OpenHexa
+### 2.1 What problems does it solve?
+[Insert description here]
+
+---
+
+## 3. Jump Start your Workspace
+### 3.1 Template SNT Workspace
+[Insert description here]
