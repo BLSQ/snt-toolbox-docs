@@ -14,6 +14,8 @@ Welcome to the official user guide for the SNT Toolbox.
 ### 1.1 What is the SNT Toolbox?
 [Insert description here]
 
+![graphical overview of the snt process and toolbox](image1.png)
+
 ---
 
 ## 2. Getting Started with OpenHexa
@@ -25,3 +27,13 @@ Welcome to the official user guide for the SNT Toolbox.
 ## 3. Jump Start your Workspace
 ### 3.1 Template SNT Workspace
 [Insert description here]
+
+---
+
+## 4. Extracting Malaria Indicators
+
+### 4.3 Establish a connection with the HMIS/NMDR
+
+Add text and sections here ... 
+
+![screenshot](image2.png)
