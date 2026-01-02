@@ -25,6 +25,11 @@ As we transition to this new format, here are a few things to consider:
 
 The main feature of this site is the **fixed navigation panel (TOC)** on the left-hand side. To make this work, we are moving away from a single, long Google Doc. Instead, we "break down" the manual into individual, independent files—one for each section or subsection.
 
+> [!WARNING]  
+> **Please do _not_ add or update a `README.md` file in the root directory!** <br>
+Because we use `index.md` as the website’s official homepage, a `README.md` file can cause technical conflicts during the build process. More importantly, we want to avoid returning to a "single massive file" workflow. All content should live in its specific modular `.md` file.
+
+
 ### 1. The "Front Matter" Logic
 Every `.md` file starts with a small block of configuration text between triple dashes (`---`). This tells the site where the page belongs in the sidebar.
 
