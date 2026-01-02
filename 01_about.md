@@ -2,6 +2,7 @@
 layout: default
 title: 1. About the SNT Toolbox
 nav_order: 2
+has_children: true
 ---
 
 # 1. About the SNT Toolbox
