@@ -1,8 +1,9 @@
-name: Deploy docs to GitHub Pages
+name: Deploy site + v2 docs to GitHub Pages
 
 on:
   push:
     branches:
+      - main
       - v2
 
 permissions:
@@ -22,28 +23,52 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout
+      - name: Checkout main (Jekyll site)
         uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./main-site
+          destination: ./_site
+
+      - name: Checkout v2 (docs sources)
+        uses: actions/checkout@v4
+        with:
+          ref: v2
+          path: v2-site
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: v2-site/package-lock.json
 
       - name: Install dependencies
+        working-directory: v2-site
         run: npm ci
 
       - name: Build docs
+        working-directory: v2-site
         run: npm run docs:build
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Copy v2 docs under /v2
+        run: |
+          rm -rf ./_site/v2
+          mkdir -p ./_site/v2
+          cp -R v2-site/docs/build/. ./_site/v2/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/build
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
