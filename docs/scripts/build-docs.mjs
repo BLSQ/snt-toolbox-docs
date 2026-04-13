@@ -280,8 +280,8 @@ async function main() {
     await fs.writeFile(path.join(langOutDir, "index.html"), langIndex, "utf8");
   }
 
-  // Root index.html points to English by default
-  const rootIndex = `<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./en/index.html">`;
+  // Root index.html points to French by default
+  const rootIndex = `<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./fr/index.html">`;
   await fs.writeFile(path.join(BUILD_DIR, "index.html"), rootIndex, "utf8");
 
   process.stdout.write(
