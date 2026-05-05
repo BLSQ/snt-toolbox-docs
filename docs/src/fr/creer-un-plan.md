@@ -40,4 +40,5 @@ Par contre, si vous modifiez l'ordre des règles et que la SMC est appliquée d'
 Il peut être utile, lorsque l'on définit des règles, de comparer celles-ci avec les couches de données, afin de vérifier par exemple si la règle inclut bien les districts souhaités.
 Pour cela, sélectionnez une règle, et utilisez le menu déroulant en haut à gauche de la carte pour afficher la couche à comparer. 
 
+![Validate rules](../assets/validate_rules.png) M CON
 ![Validate rules](../assets/validate_rules.png)
