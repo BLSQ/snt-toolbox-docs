@@ -99,6 +99,13 @@ for (const t of tabs) {
     });
   }
 
+  // Bold applied in two goes is stored as two adjacent bold runs; the export writes them as
+  // "**a ****b**", which Markdown renders with stray asterisks. Join the runs: "**a b**".
+  // Escaped asterisks (\*) never match: they are not four in a row.
+  let joined = 0;
+  md = md.replace(/(?<![\\*\n])\*\*\*\*(?=[^\s*])/g, () => (joined++, ""));
+  if (joined) note(t.name, `joined ${joined} split bold run(s)`);
+
   // Images: placeholders come in document order, like the <media> blocks.
   let n = 0;
   md = md.replace(/&#91;image: (.*?)\\\]/g, (all, alt) => {

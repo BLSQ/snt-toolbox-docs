@@ -146,7 +146,8 @@ In `docs/scripts/build-docs.mjs`:
 ### Step 5 — First content sync (`content/initial-sync`)
 
 - Sync run 2026-11-10 (doc revs 21–129): 9 pages, 17 images (13 MB of PNG screenshots), build passes with 9 pages.
-  Found: bold split across adjacent runs exports as `**a ****b**` and shows stray `**` (3 places); 11 images have
+  Found: bold split across adjacent runs exports as `**a ****b**` and showed stray `**` (3 places; now joined by
+  `sync.mjs`); 11 images have
   a file name as alt text; Home's "Main workflow" diagram is not synced; some cross-references are plain text,
   not tab chips ("see Setting up the budget" in tabs 1, 4 and 6), so they are not links.
 

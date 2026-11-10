@@ -98,4 +98,4 @@ From modelling partners, currently Swiss TPH. The toolbox does not run impact mo
 We keep this list with programmes and partners, and update it as requests come in.
 
 - **Impact modelling.** Projections still come from modelling partners. We are exploring how AI could support this in the coming years.
-- **Analysis below Admin-2 ****level.** Analyses at health area or facility level are close to ready. Maps at that level depend on the country having reliable boundaries for those units.
+- **Analysis below Admin-2 level.** Analyses at health area or facility level are close to ready. Maps at that level depend on the country having reliable boundaries for those units.

@@ -78,8 +78,8 @@ The three screenshots below show this with two rules for routine ITNs, whose net
 Eligibility criteria give a first version of a scenario. Programmes then adjust it to operational and programmatic considerations, which the WHO manual raises in steps 5 to 8:
 
 - **Adding or removing districts by hand.** For example, adding a district with a large displaced population to the ITN rule, or removing a district where IRS is ongoing and should continue.
-- **Deployment years (Tab Overrides)****.** An ITN campaign every three years, a phased introduction of the malaria vaccine, or an intervention that stops after a given year.
-- **Target scale and costs per rule (Tab Overrides)****.** For example, lower coverage in a first year of introduction, or a higher distribution cost in hard-to-reach districts.
+- **Deployment years (Tab Overrides).** An ITN campaign every three years, a phased introduction of the malaria vaccine, or an intervention that stops after a given year.
+- **Target scale and costs per rule (Tab Overrides).** For example, lower coverage in a first year of introduction, or a higher distribution cost in hard-to-reach districts.
 - **Changing the data year** of an indicator, to see how the selection changes with more recent data.
 - **Testing alternatives in a duplicate scenario.** The manual lists typical questions, such as whether to scale back ITNs in urban areas, or whether to choose SMC or the malaria vaccine where a district is eligible for both and resources do not allow both.
 
