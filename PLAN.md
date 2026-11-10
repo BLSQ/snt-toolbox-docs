@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); next: step 3 on branch `feat/build-ordering`.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); step 3 done (merged); next: step 4 on branch `feat/sync-skill`.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -99,6 +99,10 @@ then pick up the first unchecked step.
       in the next Claude Code session (e.g. `/permissions`). Done 2026-11-10 ("Deny (34)").
 
 ### Step 3 — Generator changes (`feat/build-ordering`)
+
+- Agent edits below done 2026-11-10 (build passes with zero pages; dummy pages checked, not committed).
+  Merged into `main` 2026-11-10. `docs:serve` uses port 8000 (`PORT` overrides). With zero pages the root
+  `index.html` shows "No pages yet". Two pages mapping to the same URL fail the build.
 
 In `docs/scripts/build-docs.mjs`:
 
