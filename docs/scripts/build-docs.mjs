@@ -11,8 +11,13 @@ const SRC_ROOT = path.join(DOCS_DIR, "src");
 const ASSETS_DIR = path.join(DOCS_DIR, "src", "assets");
 const BUILD_DIR = path.join(DOCS_DIR, "build");
 const TEMPLATES_DIR = path.join(DOCS_DIR, "templates");
-const LANGS = ["en", "fr"];
-const PREFERRED_HOME_SOURCE_REL = "creer-un-plan.md";
+const DEFAULT_LANG = "en";
+// Folders under docs/src/ that are never languages or page sources.
+const RESERVED_DIRS = new Set(["assets", "private"]);
+
+function isIgnoredName(name) {
+  return name.startsWith("_") || name.startsWith(".");
+}
 
 function stripFirstH1(markdown) {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
@@ -34,6 +39,7 @@ async function listMarkdownFiles(dir) {
   const out = [];
   const entries = await fs.readdir(dir, { withFileTypes: true });
   for (const ent of entries) {
+    if (isIgnoredName(ent.name)) continue;
     const p = path.join(dir, ent.name);
     if (ent.isDirectory()) {
       out.push(...(await listMarkdownFiles(p)));
@@ -42,6 +48,31 @@ async function listMarkdownFiles(dir) {
     }
   }
   return out;
+}
+
+// Languages are the folders under docs/src/ that contain at least one page.
+async function detectLanguages() {
+  let entries = [];
+  try {
+    entries = await fs.readdir(SRC_ROOT, { withFileTypes: true });
+  } catch (err) {
+    if (err?.code !== "ENOENT") throw err;
+    return [];
+  }
+
+  const langs = [];
+  for (const ent of entries) {
+    if (!ent.isDirectory()) continue;
+    if (isIgnoredName(ent.name) || RESERVED_DIRS.has(ent.name)) continue;
+    const files = await listMarkdownFiles(path.join(SRC_ROOT, ent.name));
+    if (files.length > 0) langs.push(ent.name);
+  }
+
+  return langs.sort((a, b) => {
+    if (a === DEFAULT_LANG) return -1;
+    if (b === DEFAULT_LANG) return 1;
+    return a.localeCompare(b, "en");
+  });
 }
 
 async function copyDir(srcDir, destDir) {
@@ -67,6 +98,11 @@ function sanitizeSegment(seg) {
     .replace(/^-|-$/g, "");
 }
 
+// Order prefix such as "00-" or "03-" is used for sorting only, never in URLs.
+function stripOrderPrefix(seg) {
+  return seg.replace(/^\d+-/, "");
+}
+
 function toOutputRelPath(langSrcDir, inputPath) {
   const rel = path.relative(langSrcDir, inputPath);
   const dir = path.dirname(rel);
@@ -74,10 +110,13 @@ function toOutputRelPath(langSrcDir, inputPath) {
 
   const outDir =
     dir && dir !== "."
-      ? dir.split(path.sep).map(sanitizeSegment).join(path.sep)
+      ? dir
+          .split(path.sep)
+          .map((seg) => sanitizeSegment(stripOrderPrefix(seg)))
+          .join(path.sep)
       : "";
 
-  const outFile = `${sanitizeSegment(base) || "page"}.html`;
+  const outFile = `${sanitizeSegment(stripOrderPrefix(base)) || "page"}.html`;
   return outDir ? path.join(outDir, outFile) : outFile;
 }
 
@@ -101,18 +140,29 @@ function toHref(fromRelPath, toRelPath) {
   return rel.startsWith(".") ? rel : `./${rel}`;
 }
 
-function renderLanguageSelect({ currentLang, langToHref }) {
-  const options = LANGS.map((lang) => {
-    const href = langToHref[lang] ?? "./index.html";
-    const selected = lang === currentLang ? " selected" : "";
-    return `<option value="${escapeHtml(href)}"${selected}>${escapeHtml(
-      lang.toUpperCase(),
-    )}</option>`;
-  }).join("");
+function renderLanguageSwitch({ langs, currentLang, langToHref }) {
+  // Only show the switcher when there is something to switch to.
+  if (langs.length < 2) return "";
 
-  return `<select class="lang-switch" aria-label="Language" onchange="location.href=this.value">
+  const options = langs
+    .map((lang) => {
+      const href = langToHref[lang] ?? "./index.html";
+      const selected = lang === currentLang ? " selected" : "";
+      return `<option value="${escapeHtml(href)}"${selected}>${escapeHtml(
+        lang.toUpperCase(),
+      )}</option>`;
+    })
+    .join("");
+
+  return `<div class="lang-float" aria-label="Language">
+<select class="lang-switch" aria-label="Language" onchange="location.href=this.value">
 ${options}
-</select>`;
+</select>
+</div>`;
+}
+
+function redirectPage(url) {
+  return `<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=${url}">`;
 }
 
 async function main() {
@@ -133,19 +183,13 @@ async function main() {
     if (err?.code !== "ENOENT") throw err;
   }
 
-  const pagesByLang = new Map(); // lang -> pages[]
+  const langs = await detectLanguages();
+  const pagesByLang = new Map(); // lang -> pages[] (sorted, first = home)
   const pagesByLangAndSourceRel = new Map(); // `${lang}:${sourceRel}` -> page
-  const homeByLang = new Map(); // lang -> outputRelPath
 
-  for (const lang of LANGS) {
+  for (const lang of langs) {
     const langSrcDir = path.join(SRC_ROOT, lang);
-    let mdFiles = [];
-    try {
-      mdFiles = await listMarkdownFiles(langSrcDir);
-    } catch (err) {
-      if (err?.code !== "ENOENT") throw err;
-      mdFiles = [];
-    }
+    const mdFiles = await listMarkdownFiles(langSrcDir);
 
     const pages = [];
     for (const file of mdFiles) {
@@ -156,52 +200,55 @@ async function main() {
       const relDir = path.dirname(sourceRel);
       const topLevelDir = relDir === "." ? null : relDir.split(path.sep)[0];
 
-      const outputRelPath = toOutputRelPath(langSrcDir, file);
       pages.push({
         lang,
         inputPath: file,
         sourceRel,
-        outputRelPath,
+        outputRelPath: toOutputRelPath(langSrcDir, file),
         title: title ?? fallbackTitle,
         markdownBody: body,
         topLevelDir,
       });
     }
 
-    pages.sort((a, b) => {
-      const aDir = a.topLevelDir ?? "";
-      const bDir = b.topLevelDir ?? "";
-      if (aDir !== bDir) return aDir.localeCompare(bDir, "en");
-      return a.title.localeCompare(b.title, "en");
-    });
+    // Order comes from the filename (numeric prefix), not from the title.
+    pages.sort((a, b) =>
+      a.sourceRel.localeCompare(b.sourceRel, "en", { numeric: true }),
+    );
+
+    const outputs = new Set();
+    for (const p of pages) {
+      if (outputs.has(p.outputRelPath)) {
+        throw new Error(
+          `Two pages in "${lang}" map to the same output file: ${p.outputRelPath}`,
+        );
+      }
+      outputs.add(p.outputRelPath);
+    }
 
     pagesByLang.set(lang, pages);
-    const preferred = pages.find((p) => p.sourceRel === PREFERRED_HOME_SOURCE_REL);
-    homeByLang.set(lang, preferred?.outputRelPath ?? pages[0]?.outputRelPath ?? "index.html");
     for (const p of pages) {
       pagesByLangAndSourceRel.set(`${lang}:${p.sourceRel}`, p);
     }
   }
 
   // Build each language into docs/build/<lang>/
-  for (const lang of LANGS) {
-    const pages = pagesByLang.get(lang) ?? [];
-    if (pages.length === 0) continue;
-
+  for (const lang of langs) {
+    const pages = pagesByLang.get(lang);
     const langOutDir = path.join(BUILD_DIR, lang);
     await ensureDir(langOutDir);
 
-    const homeRelPath = homeByLang.get(lang) ?? (pages[0]?.outputRelPath ?? "index.html");
+    // The first page in sort order is the home page.
+    const homeRelPath = pages[0].outputRelPath;
 
+    // Sidebar groups in order of first appearance (i.e. sort order).
     const groups = new Map(); // dir -> pages[]
     for (const p of pages) {
       const key = p.topLevelDir ?? "";
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(p);
     }
-    const sortedGroupKeys = Array.from(groups.keys()).sort((a, b) =>
-      a.localeCompare(b, "en"),
-    );
+    const sortedGroupKeys = Array.from(groups.keys());
 
     for (const page of pages) {
       const sidebar = sortedGroupKeys
@@ -228,22 +275,20 @@ async function main() {
         .join("\n");
 
       const langToHref = {};
-      for (const otherLang of LANGS) {
+      for (const otherLang of langs) {
         const other = pagesByLangAndSourceRel.get(
           `${otherLang}:${page.sourceRel}`,
         );
-        const otherHome = homeByLang.get(otherLang) ?? "index.html";
+        const otherHome = pagesByLang.get(otherLang)[0].outputRelPath;
         const targetRel = other?.outputRelPath ?? otherHome;
 
-        // From current page to other language page:
-        // ../../fr/<page>.html relative to current page
         const fromLangPage = path.join(lang, page.outputRelPath);
         const toLangPage = path.join(otherLang, targetRel);
-        const href = toHref(fromLangPage, toLangPage);
-        langToHref[otherLang] = href;
+        langToHref[otherLang] = toHref(fromLangPage, toLangPage);
       }
 
-      const languageSelect = renderLanguageSelect({
+      const languageSwitch = renderLanguageSwitch({
+        langs,
         currentLang: lang,
         langToHref,
       });
@@ -253,10 +298,7 @@ async function main() {
       const outFileAbs = path.join(langOutDir, page.outputRelPath);
       await ensureDir(path.dirname(outFileAbs));
 
-      const cssHref = toHref(
-        path.join(lang, page.outputRelPath),
-        "styles.css",
-      );
+      const cssHref = toHref(path.join(lang, page.outputRelPath), "styles.css");
 
       const html = template
         .replaceAll("{{htmlLang}}", escapeHtml(lang))
@@ -268,24 +310,32 @@ async function main() {
           escapeHtml(toHref(page.outputRelPath, homeRelPath)),
         )
         .replaceAll("{{cssHref}}", escapeHtml(cssHref))
-        .replaceAll("{{languageSelect}}", languageSelect);
+        .replaceAll("{{languageSwitch}}", languageSwitch);
 
       await fs.writeFile(outFileAbs, html, "utf8");
     }
 
-    // Language index.html redirects to first page (avoids relative-path issues).
-    const langIndex = `<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./${encodeURI(
-      homeRelPath.split(path.sep).map((s) => s).join("/"),
-    )}">`;
-    await fs.writeFile(path.join(langOutDir, "index.html"), langIndex, "utf8");
+    // Language index.html redirects to the home page (avoids relative-path issues).
+    const homeUrl = `./${encodeURI(homeRelPath.split(path.sep).join("/"))}`;
+    await fs.writeFile(
+      path.join(langOutDir, "index.html"),
+      redirectPage(homeUrl),
+      "utf8",
+    );
   }
 
-  // Root index.html points to French by default
-  const rootIndex = `<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=./fr/index.html">`;
+  // Root index.html redirects to the default language, or the first one that exists.
+  const rootIndex =
+    langs.length === 0
+      ? `<!doctype html><meta charset="utf-8"><title>SNT Explorer Documentation</title><p>No pages yet.</p>`
+      : redirectPage(`./${langs.includes(DEFAULT_LANG) ? DEFAULT_LANG : langs[0]}/index.html`);
   await fs.writeFile(path.join(BUILD_DIR, "index.html"), rootIndex, "utf8");
 
   process.stdout.write(
-    `Built docs into ${path.relative(process.cwd(), BUILD_DIR)}\n`,
+    `Built docs into ${path.relative(process.cwd(), BUILD_DIR)} ` +
+      `(languages: ${langs.join(", ") || "none"}; pages: ${Array.from(
+        pagesByLang.values(),
+      ).reduce((n, p) => n + p.length, 0)})\n`,
   );
 }
 
@@ -294,4 +344,3 @@ main().catch((err) => {
   console.error(err);
   process.exitCode = 1;
 });
-

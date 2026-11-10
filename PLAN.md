@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 done (merged); step 2 edits done, awaiting PR/merge; next: step 3.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); next: step 3 on branch `feat/build-ordering`.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -95,23 +95,23 @@ then pick up the first unchecked step.
       machine had Node 18 (too old: `package.json` requires >=20); guide them through installing via `nvm`.
 - [x] `LICENSE` (MIT, Bluesquare) and `LICENSE-docs` (CC BY 4.0, Bluesquare); a "Licence" section in
       `docs/README.md` stating which applies to what.
-- [ ] User: open PR into `main`, merge. Check that the new `.claude/settings.json` deny rules apply
-      in the next Claude Code session (e.g. `/permissions`).
+- [x] User: open PR into `main`, merge. Check that the new `.claude/settings.json` deny rules apply
+      in the next Claude Code session (e.g. `/permissions`). Done 2026-11-10 ("Deny (34)").
 
 ### Step 3 — Generator changes (`feat/build-ordering`)
 
 In `docs/scripts/build-docs.mjs`:
 
-- [ ] Sort pages by filename (numeric prefix), not by title; strip `NN-` from output paths.
-- [ ] Home = first page; remove `PREFERRED_HOME_SOURCE_REL = "creer-un-plan.md"`.
-- [ ] Detect languages from existing folders that contain pages (replace hard-coded `LANGS`);
+- [x] Sort pages by filename (numeric prefix), not by title; strip `NN-` from output paths.
+- [x] Home = first page; remove `PREFERRED_HOME_SOURCE_REL = "creer-un-plan.md"`.
+- [x] Detect languages from existing folders that contain pages (replace hard-coded `LANGS`);
       hide the language switcher when only one language exists; root `index.html` redirects to `en`.
-- [ ] Ignore files/folders starting with `_` or `.`; keep ignoring `private/`.
-- [ ] Add an npm script `docs:serve` that builds and serves `docs/build/` on http://localhost
-      (e.g. `npx serve` or a tiny Node static server, no new heavy dependency); document
-      `npm ci` → `npm run docs:serve` as the local preview routine in `docs/README.md` and CLAUDE.md.
-- [ ] Update `docs/README.md` conventions accordingly.
-- [ ] Verify with a couple of dummy pages (not committed), then build with the empty tree.
+- [x] Ignore files/folders starting with `_` or `.`; keep ignoring `private/`.
+- [x] Add an npm script `docs:serve` that builds and serves `docs/build/` on http://localhost:8000
+      (tiny Node static server in `docs/scripts/serve-docs.mjs`, no new dependency; `PORT` overrides);
+      `npm ci` → `npm run docs:serve` documented in `docs/README.md` and CLAUDE.md.
+- [x] Update `docs/README.md` conventions accordingly.
+- [x] Verify with a couple of dummy pages (not committed), then build with the empty tree.
 
 ### Step 4 — Sync skill (`feat/sync-skill`)
 

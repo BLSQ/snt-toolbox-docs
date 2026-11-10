@@ -7,24 +7,24 @@ This repository includes a small **static documentation site generator** that tu
 From the repo root:
 
 ```bash
-npm install
-npm run docs:build
+npm ci
+npm run docs:serve
 ```
 
-Then open:
-
-- `docs/build/index.html` (redirects to English)
+`docs:serve` builds the site into `docs/build/` and serves it at http://localhost:8000/ (Ctrl+C stops it).
+Use `PORT=8080 npm run docs:serve` to pick another port. To only build without serving, run `npm run docs:build`.
 
 ## Structure
 
 ### Sources
 
-- **English docs**: `docs/src/en/`
-- **French docs**: `docs/src/fr/`
+- **Languages**: each folder directly under `docs/src/` that contains at least one Markdown page is a language
+  (today: `docs/src/en/`). Folders such as `docs/src/fr/` are picked up automatically once they contain pages.
 - **Private (not built)**: `docs/src/private/`
 - **Shared static assets**: `docs/src/assets/` (images, svg, etc.)
 
-The private folder serves as a place to store internal documentation, it is ignored by the build process.
+Files and folders whose name starts with `_` or `.` are ignored by the build, as is `private/`.
+Use `_` for drafts you want to keep in the tree without publishing them.
 
 ### Templates
 
@@ -37,10 +37,23 @@ The build generates:
 
 - `docs/build/styles.css`
 - `docs/build/assets/` (copied from `docs/src/assets/`)
-- `docs/build/en/**` and `docs/build/fr/**`
-- `docs/build/index.html` (redirects to `./en/index.html`)
+- `docs/build/<lang>/**` for each language that has pages
+- `docs/build/index.html` (redirects to `./en/index.html`, or to the first language that has pages)
 
 ## Conventions
+
+### Page order and URLs
+
+- Pages are ordered by **filename**, with numbers compared numerically: `00-home.md` before `02-…` before `10-…`.
+  Titles do not affect the order.
+- A leading order prefix `NN-` (digits followed by a dash) is removed from URLs:
+  `00-home.md` → `home.html`, `guides/03-install.md` → `guides/install.html`.
+- Use names such as `00-home.md`, `01-what-the-toolbox-does.md`, `02-…`; the number is only for sorting.
+
+### Home page
+
+The **first page in that order** is the home page. The language's `index.html` redirects to it, and the
+sidebar brand links to it. So `00-home.md` is the landing page.
 
 ### Page title
 
@@ -48,27 +61,25 @@ The generator uses the **first H1** (`# ...`) in each Markdown file as the page 
 
 ### Sidebar (TOC)
 
-- Pages are grouped by **top-level folder** (section header).
+- Pages are grouped by **top-level folder** (section header), in order of their first page.
 - Files directly under `docs/src/<lang>/` appear without a section header.
-
-### “Home” page (per language)
-
-Each language’s `index.html` redirects to `creer-un-plan.html` if `creer-un-plan.md` exists in that language folder; otherwise it falls back to the first page (sorted).
 
 ### Language switcher
 
-- A floating language selector is rendered at the **top-right of the page**.
-- When switching languages, it tries to open the **same source-relative page** in the other language (same path under `docs/src/<lang>/`).
+- The language selector appears at the **top-right of the page** only when **two or more languages** have pages.
+  With one language (today, English only), it is not shown.
+- When switching languages, it tries to open the **same source-relative page** in the other language (same path under `docs/src/<lang>/`, same file name).
 - If that translation does not exist, it falls back to that language’s home page.
 
 ## Adding new pages
 
-1. Create a Markdown file under `docs/src/en/` and/or `docs/src/fr/`.
+1. Create a Markdown file under `docs/src/en/` (and/or another `docs/src/<lang>/`), named with its order prefix,
+   e.g. `docs/src/en/03-configuring-interventions.md`.
 2. Give it an H1 title as the first heading.
-3. Rebuild:
+3. Preview it:
 
 ```bash
-npm run docs:build
+npm run docs:serve
 ```
 
 ## Notes

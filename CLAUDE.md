@@ -37,10 +37,10 @@ In WSL, run `source ~/.nvm/nvm.sh` first (otherwise the Windows `npm` is picked 
 ```bash
 npm ci               # install the exact dependencies from package-lock.json
 npm run docs:build   # generate the site into docs/build/
+npm run docs:serve   # build, then serve docs/build/ at http://localhost:8000/ (Ctrl+C stops)
 ```
 
-Preview: open `docs/build/index.html` in a browser. (A `docs:serve` script for a localhost
-preview is planned in `PLAN.md` step 3.)
+Local preview routine: `npm ci`, then `npm run docs:serve`, then open http://localhost:8000/.
 
 ## Folder map
 
