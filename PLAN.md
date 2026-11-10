@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); step 3 done (merged); step 4 edits done, awaiting PR/merge; next: step 5.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); step 3 done (merged); step 4 done (committed directly to `main`); step 5 sync run, awaiting review.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -141,9 +141,14 @@ In `docs/scripts/build-docs.mjs`:
       7. Run `npm run docs:build`, report the result and a summary of changed files; never commit.
       8. Be language-ready: take an optional language + doc link (future French doc → `docs/src/fr/`).
 - [x] Test it in a scratch run; check what the connector's Markdown looks like for each block type.
-- [ ] User: open PR into `main`, merge.
+- [x] User: open PR into `main`, merge. Done 2026-11-10 by committing directly to `main` (`1fddfb5`), no PR.
 
 ### Step 5 — First content sync (`content/initial-sync`)
+
+- Sync run 2026-11-10 (doc revs 21–129): 9 pages, 17 images (13 MB of PNG screenshots), build passes with 9 pages.
+  Found: bold split across adjacent runs exports as `**a ****b**` and shows stray `**` (3 places); 11 images have
+  a file name as alt text; Home's "Main workflow" diagram is not synced; some cross-references are plain text,
+  not tab chips ("see Setting up the budget" in tabs 1, 4 and 6), so they are not links.
 
 - [ ] Run `/sync-docs`, review the diff and the local build (`docs/build/index.html`) with the user.
 - [ ] User: PR, merge, verify the live site shows the 9 pages with Home as landing page.
