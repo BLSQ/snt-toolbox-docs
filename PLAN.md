@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 in progress on branch `chore/cleanup-and-deploy`.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); step 2 edits done, awaiting PR/merge; next: step 3.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -48,7 +48,9 @@ then pick up the first unchecked step.
 
 - [x] User: branch `chore/cleanup-and-deploy` from `v2`, merge `origin/main` into it (brings the `CNAME` commit).
       Done 2026-11-10 (merge commit `4c2790b`). User's Node upgraded to v22 via nvm.
-- Agent edits below done 2026-11-10 (build passes with zero pages). **Next: the user's GitHub steps.**
+- Agent edits below done 2026-11-10 (build passes with zero pages). Step 1 squash-merged into `main` 2026-11-10.
+  Also bumped `marked` (npm audit fix, GHSA-6v9c-7cg6-27q7). Known: root `index.html` redirects to the missing
+  `fr/index.html` until step 3. In WSL, run `source ~/.nvm/nvm.sh` before npm (otherwise the Windows npm is used).
 - [x] Delete Jekyll leftovers: `index.md`, `01_about.md`, `01_01_description.md`, `02_getting_started.md`,
       `03_jump_start.md`, `04_extracting_indicators.md`, `image1.png`, `image2.png`, `_config.yml`,
       `README_ignore.md`, `CNAME`.
@@ -61,34 +63,40 @@ then pick up the first unchecked step.
       - `workflow_dispatch` → manual run
 - [x] Rewrite `CONTRIBUTING.md` for the current workflow (doc → `/sync-docs` → PR → main).
 - [x] Add this `PLAN.md`.
-- [ ] User, on GitHub **before merging**: Settings → Environments → `github-pages` → deployment
+- [x] User, on GitHub **before merging**: Settings → Environments → `github-pages` → deployment
       branches: allow `main` (it currently allows `v2`). Check Settings → Pages: source = GitHub Actions,
       custom domain = `docs.snt-toolbox.org`.
-- [ ] User: open PR into `main`, merge, check the Actions run and the live site
+- [x] User: open PR into `main`, merge, check the Actions run and the live site
       (expected: site up but nearly empty until step 5).
-- [ ] User, after merge: change nothing else in Pages; delete remote branches `v2` and `just-the-docs`.
+- [x] User, after merge: change nothing else in Pages; delete remote branches `v2` and `just-the-docs`.
 
 > Note: between merging step 1 and step 5 the live site is empty. Accepted (site not in use yet).
 
 ### Step 2 — Agent setup and licence (`chore/agent-setup`)
 
-- [ ] `CLAUDE.md`: what the repo is, D1/D8 rules, build/preview commands, folder map, pointer to
+- Agent edits below done 2026-11-10 (build passes). Workflow now reads the Node version from `.nvmrc`
+  (`node-version-file`). `LICENSE-docs` holds the official CC BY 4.0 legal code; logos are excluded.
+  ADR index and template in `docs/adr/README.md` and `0000-template.md`.
+
+- [x] `CLAUDE.md`: what the repo is, D1/D8 rules, build/preview commands, folder map, pointer to
       `PLAN.md`, `BACKLOG.md`, `docs/adr/`.
-- [ ] `.claude/settings.json` (committed, shared):
+- [x] `.claude/settings.json` (committed, shared):
       - deny: `git commit`, `git push`, `git merge`, `git rebase`, `git reset`, `git checkout`,
         `git switch`, `git restore`, `git clean`, `git stash`, `git branch -d/-D`, `git tag`,
         `gh pr create/merge/close`, `gh repo`, `gh api` (non-GET), `rm -rf`; Edit/Write on `docs/build/**`.
       - allow: `git status`, `git diff`, `git log`, `git show`, `git branch` (list), `git fetch`,
         `npm ci`, `npm install`, `npm run docs:build`.
       - Note in CLAUDE.md that deny patterns are a safety net, not a sandbox.
-- [ ] `docs/adr/` with a short template and ADRs 0001–0005 covering D1+D2, D3, D4, D5 (status: open on
+- [x] `docs/adr/` with a short template and ADRs 0001–0005 covering D1+D2, D3, D4, D5 (status: open on
       French ownership), D7.
-- [ ] `BACKLOG.md`: French version + translation owner; UI redesign with Bluesquare design system;
+- [x] `BACKLOG.md`: French version + translation owner; UI redesign with Bluesquare design system;
       search; per-page "last synced" date; link checker in CI.
-- [ ] `.nvmrc` pinning Node 22 (LTS), and set the workflow's `node-version` to match. The user's
+- [x] `.nvmrc` pinning Node 22 (LTS), and set the workflow's `node-version` to match. The user's
       machine had Node 18 (too old: `package.json` requires >=20); guide them through installing via `nvm`.
-- [ ] `LICENSE` (MIT, Bluesquare) and `LICENSE-docs` (CC BY 4.0, Bluesquare); a "Licence" section in
+- [x] `LICENSE` (MIT, Bluesquare) and `LICENSE-docs` (CC BY 4.0, Bluesquare); a "Licence" section in
       `docs/README.md` stating which applies to what.
+- [ ] User: open PR into `main`, merge. Check that the new `.claude/settings.json` deny rules apply
+      in the next Claude Code session (e.g. `/permissions`).
 
 ### Step 3 — Generator changes (`feat/build-ordering`)
 
