@@ -1,6 +1,7 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); step 3 done (merged); step 4 done (committed directly to `main`); step 5 sync run, awaiting review.** Update the checkboxes as steps land.
+Status: **done 2026-11-10.** All five steps landed on `main`; the live site shows the 9 synced pages.
+Leftovers are in `BACKLOG.md`. A new piece of work starts a new plan here.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -151,6 +152,7 @@ In `docs/scripts/build-docs.mjs`:
   a file name as alt text; Home's "Main workflow" diagram is not synced; some cross-references are plain text,
   not tab chips ("see Setting up the budget" in tabs 1, 4 and 6), so they are not links.
 
-- [ ] Run `/sync-docs`, review the diff and the local build (`docs/build/index.html`) with the user.
-- [ ] User: PR, merge, verify the live site shows the 9 pages with Home as landing page.
-- [ ] Mark this plan done; move leftovers to `BACKLOG.md`.
+- [x] Run `/sync-docs`, review the diff and the local build (`docs/build/index.html`) with the user.
+- [x] User: PR, merge, verify the live site shows the 9 pages with Home as landing page.
+      Merged as #5 (`23f30c2`); live pages and images checked (HTTP 200).
+- [x] Mark this plan done; move leftovers to `BACKLOG.md`.
