@@ -16,7 +16,8 @@ To change the documentation, edit the Claude Doc.
 
 1. **Edit the Claude Doc.** One tab = one page on the site. Tab order = page order; the first tab is the home page.
 2. **Sync.** From the repo root, in Claude Code, run `/sync-docs`. It reads the doc and rewrites
-   `docs/src/en/` and `docs/src/assets/`, then builds the site. It never commits.
+   `docs/src/en/` and `docs/src/assets/en/`, then builds the site and lists what did not convert
+   cleanly (for example charts and diagrams, which cannot be exported yet). It never commits.
 3. **Review locally.** Check the changed files (`git diff`) and preview the site (see below).
 4. **Open a pull request into `main`.** GitHub Actions builds the site to check it, but does not deploy it.
 5. **Merge.** Every push to `main` builds the site and deploys it to GitHub Pages.
@@ -40,7 +41,8 @@ Then open `docs/build/index.html` in a browser.
 | Path | What it is |
 |------|------------|
 | `docs/src/<lang>/` | Generated Markdown pages (do not edit) |
-| `docs/src/assets/` | Images used by the pages |
+| `docs/src/assets/<lang>/` | Images used by the pages (generated, do not edit) |
+| `.claude/skills/sync-docs/` | The `/sync-docs` skill and its script |
 | `docs/templates/` | HTML template and CSS of the site |
 | `docs/scripts/build-docs.mjs` | The site generator |
 | `.github/workflows/` | Build and deploy pipeline |

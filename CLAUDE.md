@@ -47,14 +47,14 @@ Local preview routine: `npm ci`, then `npm run docs:serve`, then open http://loc
 | Path | What it is |
 |------|------------|
 | `docs/src/<lang>/` | Generated Markdown pages, one per doc tab (do not edit) |
-| `docs/src/assets/` | Images used by the pages (synced) and `logo.svg` |
+| `docs/src/assets/` | `logo.svg`; synced images in `docs/src/assets/<lang>/` (do not edit) |
 | `docs/src/private/` | Internal notes, ignored by the build |
 | `docs/templates/` | HTML template and CSS of the site |
 | `docs/scripts/build-docs.mjs` | The site generator |
 | `docs/build/` | Build output (git-ignored, do not edit) |
 | `docs/adr/` | Architecture decision records |
 | `.github/workflows/` | Build (PRs) and deploy (`main`) pipeline |
-| `.claude/` | Shared Claude Code settings and project skills |
+| `.claude/` | Shared Claude Code settings and project skills (`skills/sync-docs/`: `/sync-docs`) |
 
 ## Where to look next
 

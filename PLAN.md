@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); step 3 done (merged); next: step 4 on branch `feat/sync-skill`.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); step 3 done (merged); step 4 edits done, awaiting PR/merge; next: step 5.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -119,7 +119,15 @@ In `docs/scripts/build-docs.mjs`:
 
 ### Step 4 — Sync skill (`feat/sync-skill`)
 
-- [ ] `.claude/skills/sync-docs/SKILL.md`, invoked as `/sync-docs`. It must:
+- Agent edits below done 2026-11-10 (scratch run on Home + tab 2 in a copy of the repo; real tree untouched;
+  build passes with zero pages). Design: the agent exports each tab as Markdown (base64, copied verbatim to a
+  file; size checked), reads the tab XML for images (`<media>` → blob → asset id → Artifact asset download) and
+  tab chips, writes a manifest; `.claude/skills/sync-docs/sync.mjs` writes the files deterministically.
+  Images go to `docs/src/assets/<lang>/`, a folder the sync owns. Found: the export drops widgets (Home's
+  "Main workflow" diagram → HTML comment + flag), turns tab chips into plain text, keeps the doc's H1/byline
+  (replaced by `# <tab name>` / dropped). Not yet seen in the doc: code blocks, task lists, suggestions.
+
+- [x] `.claude/skills/sync-docs/SKILL.md`, invoked as `/sync-docs`. It must:
       1. Read the doc (artifact link above, stored in the skill) via the Claude Docs connector: list tabs,
          order by tab order, read each tab as Markdown.
       2. Write `docs/src/en/NN-<slug>.md` per tab (`00` = Home), starting with
@@ -132,7 +140,8 @@ In `docs/scripts/build-docs.mjs`:
          are excluded) in its final report.
       7. Run `npm run docs:build`, report the result and a summary of changed files; never commit.
       8. Be language-ready: take an optional language + doc link (future French doc → `docs/src/fr/`).
-- [ ] Test it in a scratch run; check what the connector's Markdown looks like for each block type.
+- [x] Test it in a scratch run; check what the connector's Markdown looks like for each block type.
+- [ ] User: open PR into `main`, merge.
 
 ### Step 5 — First content sync (`content/initial-sync`)
 

@@ -21,7 +21,8 @@ Use `PORT=8080 npm run docs:serve` to pick another port. To only build without s
 - **Languages**: each folder directly under `docs/src/` that contains at least one Markdown page is a language
   (today: `docs/src/en/`). Folders such as `docs/src/fr/` are picked up automatically once they contain pages.
 - **Private (not built)**: `docs/src/private/`
-- **Shared static assets**: `docs/src/assets/` (images, svg, etc.)
+- **Shared static assets**: `docs/src/assets/` (`logo.svg`). Page images are synced from the Claude Doc into
+  `docs/src/assets/<lang>/` by `/sync-docs`, which owns that folder: it deletes images no page uses.
 
 Files and folders whose name starts with `_` or `.` are ignored by the build, as is `private/`.
 Use `_` for drafts you want to keep in the tree without publishing them.
@@ -72,6 +73,9 @@ The generator uses the **first H1** (`# ...`) in each Markdown file as the page 
 - If that translation does not exist, it falls back to that language’s home page.
 
 ## Adding new pages
+
+Pages in `docs/src/en/` are generated from the Claude Doc by `/sync-docs` (see `CONTRIBUTING.md`):
+add a tab to the doc and sync. The steps below are for trying the generator locally.
 
 1. Create a Markdown file under `docs/src/en/` (and/or another `docs/src/<lang>/`), named with its order prefix,
    e.g. `docs/src/en/03-configuring-interventions.md`.
