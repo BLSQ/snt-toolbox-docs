@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 done (merged); step 2 edits done, awaiting PR/merge; next: step 3.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); step 2 done (merged); next: step 3 on branch `feat/build-ordering`.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -95,8 +95,8 @@ then pick up the first unchecked step.
       machine had Node 18 (too old: `package.json` requires >=20); guide them through installing via `nvm`.
 - [x] `LICENSE` (MIT, Bluesquare) and `LICENSE-docs` (CC BY 4.0, Bluesquare); a "Licence" section in
       `docs/README.md` stating which applies to what.
-- [ ] User: open PR into `main`, merge. Check that the new `.claude/settings.json` deny rules apply
-      in the next Claude Code session (e.g. `/permissions`).
+- [x] User: open PR into `main`, merge. Check that the new `.claude/settings.json` deny rules apply
+      in the next Claude Code session (e.g. `/permissions`). Done 2026-11-10 ("Deny (34)").
 
 ### Step 3 — Generator changes (`feat/build-ordering`)
 
