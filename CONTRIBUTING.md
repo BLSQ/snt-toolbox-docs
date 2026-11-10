@@ -1,84 +1,49 @@
-# 🚀 Project Update: SNT Toolbox Documentation Website
+# Contributing to the SNT Toolbox documentation
 
-Hi all!
+The site https://docs.snt-toolbox.org is generated from this repository.
 
-I have created a simple static documentation website using **GitHub Pages**. You can view the live site here: https://viz.bluesquare.org/snt-toolbox-docs/
+## Where the content lives
 
-This is currently a template to help us evaluate the workflow and "feel" of the documentation. Most of the content still needs to be migrated or added—please see the guide below on how we can collaborate on this.
+The content is written in a Claude Doc, **"SNT Toolbox documentation"**:
+https://claude.ai/artifact/DqgzieyF4gabME36ftNbsw
 
-For the actual content, refer to this ![Google Docs](https://docs.google.com/document/d/15TrBn2AD21zK_-ZU7xt1GTnf2_3LT5hHXGQ981hx8wU/edit?usp=sharing) !
+That doc is the **single source of truth**. The Markdown files in `docs/src/` are generated from it
+and must **not be edited by hand**: any manual change is overwritten at the next sync.
 
----
+To change the documentation, edit the Claude Doc.
 
-## 💡 Points for Discussion
+## Publishing changes
 
-As we transition to this new format, here are a few things to consider:
+1. **Edit the Claude Doc.** One tab = one page on the site. Tab order = page order; the first tab is the home page.
+2. **Sync.** From the repo root, in Claude Code, run `/sync-docs`. It reads the doc and rewrites
+   `docs/src/en/` and `docs/src/assets/`, then builds the site. It never commits.
+3. **Review locally.** Check the changed files (`git diff`) and preview the site (see below).
+4. **Open a pull request into `main`.** GitHub Actions builds the site to check it, but does not deploy it.
+5. **Merge.** Every push to `main` builds the site and deploys it to GitHub Pages.
+   A deploy can also be started by hand from the Actions tab (*Run workflow*).
 
-* **Simplicity & Maintenance:** This is Jekyll-based approach, which seemed the most straightforward starting point. Updating the site _content_ is as simple as editing a Markdown (`.md`) file. While major layout changes require a bit more technical work, the goal is for everyone to easily update their own pipeline descriptions, with a dedicated maintainer handling the overall site structure.
-<br> We should eventually consult with more experienced developers to see if a more custom solution is needed, but this allows us to get started right away 🤓.
-* **Repo Separation:** I’ve created a dedicated repository for this site (`snt-toolbox-docs`) to avoid cluttering our primary code repository (![snt_development](https://github.com/BLSQ/snt_development)).
-* **Pipeline Documentation:** We need to decide on the best way to document specific pipelines. We’ve agreed on using `.md` files, but we still need to finalize:
-    1. Where to store them. Iideally the description .md files could be versioned alongside the code in `snt_development` (i.e., next to the `pipeline.py` code).
-    2. How to "link" or sync those files into this documentation website automatically.
+`main` is the only long-lived branch.
 
----
+## Building locally
 
-## 🛠️ How the Website Works
+Requirements: Node.js 22 (or at least 20).
 
-The main feature of this site is the **fixed navigation panel (TOC)** on the left-hand side. To make this work, we are moving away from a single, long Google Doc. Instead, we "break down" the manual into individual, independent files—one for each section or subsection.
-
-> [!WARNING]  
-> **Please do _not_ add or update a `README.md` file in the root directory!** <br>
-Because we use `index.md` as the website’s official homepage, a `README.md` file can cause technical conflicts during the build process. More importantly, we want to avoid returning to a "single massive file" workflow. All content should live in its specific modular `.md` file.
-
-
-### 1. The "Front Matter" Logic
-Every `.md` file starts with a small block of configuration text between triple dashes (`---`). This tells the site where the page belongs in the sidebar.
-
-**Standard Page "Fron Matter" Example:**
-```
----
-layout: default
-title: Getting Started
-nav_order: 3
----
+```bash
+npm ci               # install the dependencies listed in package-lock.json
+npm run docs:build   # generate the site into docs/build/
 ```
 
-### 2. Creating Sections & Subsections (Nesting)
-To make a page appear "inside" another in the sidebar:
+Then open `docs/build/index.html` in a browser.
 
-1.  **In the Parent File** (e.g., `01_about.md`), add: `has_children: true`
-2.  **In the Child File** (e.g., `01_01_intro.md`), add: `parent: [Exact Title of Parent]` and a `nav_order`.
+## What is where
 
-**Child Header "Fron Matter" Example:**
-```
----
-layout: default
-title: 1.1 What is SNT?
-parent: 1. About the SNT Toolbox
-nav_order: 1
----
-```
+| Path | What it is |
+|------|------------|
+| `docs/src/<lang>/` | Generated Markdown pages (do not edit) |
+| `docs/src/assets/` | Images used by the pages |
+| `docs/templates/` | HTML template and CSS of the site |
+| `docs/scripts/build-docs.mjs` | The site generator |
+| `.github/workflows/` | Build and deploy pipeline |
+| `PLAN.md` | Current work plan |
 
-### 3. Adding Images
-Simply upload your image file to the root directory (or an `/images` folder) and reference it in your Markdown:  
-`![Description of image](image_name.png)`
-
----
-
-## 🚀 How to Contribute
-
-### A. Editing or Adding Content
-* **To Edit:** Find the relevant `.md` file in the GitHub repo, click the 'Pencil' icon (or edit locally), and commit your changes.
-* **To Add:** Create a new `.md` file, copy a "Front Matter" header from an existing file, and start writing!
-
-### B. Safe Testing (Branches)
-The live website is deployed automatically from the **`main`** branch. 
-* If you want to "play around" or test significant changes without affecting the live site:
-    1. Create a new branch for your work.
-    2. Go to **Settings > Pages** in the GitHub repo.
-    3. Change the "Build and deployment" branch to your new branch to see your specific version of the site.
-    4. Once satisfied, open a Pull Request to merge into `main`.
-
----
-**Questions or feedback?** Reach out to Giulia!
+Changes to the templates, the generator or the workflow go through a normal pull request.
