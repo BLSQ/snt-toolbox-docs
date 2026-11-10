@@ -1,6 +1,6 @@
 # Plan: repo cleanup, deployment and first content sync
 
-Status: **approved 2026-11-10; step 1 in progress on branch `chore/cleanup-and-deploy`.** Update the checkboxes as steps land.
+Status: **approved 2026-11-10; step 1 done (merged); next: step 2 on branch `chore/agent-setup`.** Update the checkboxes as steps land.
 
 This file is the hand-off point between agent sessions. Read it fully before doing anything,
 then pick up the first unchecked step.
@@ -48,7 +48,9 @@ then pick up the first unchecked step.
 
 - [x] User: branch `chore/cleanup-and-deploy` from `v2`, merge `origin/main` into it (brings the `CNAME` commit).
       Done 2026-11-10 (merge commit `4c2790b`). User's Node upgraded to v22 via nvm.
-- Agent edits below done 2026-11-10 (build passes with zero pages). **Next: the user's GitHub steps.**
+- Agent edits below done 2026-11-10 (build passes with zero pages). Step 1 squash-merged into `main` 2026-11-10.
+  Also bumped `marked` (npm audit fix, GHSA-6v9c-7cg6-27q7). Known: root `index.html` redirects to the missing
+  `fr/index.html` until step 3. In WSL, run `source ~/.nvm/nvm.sh` before npm (otherwise the Windows npm is used).
 - [x] Delete Jekyll leftovers: `index.md`, `01_about.md`, `01_01_description.md`, `02_getting_started.md`,
       `03_jump_start.md`, `04_extracting_indicators.md`, `image1.png`, `image2.png`, `_config.yml`,
       `README_ignore.md`, `CNAME`.
@@ -61,12 +63,12 @@ then pick up the first unchecked step.
       - `workflow_dispatch` → manual run
 - [x] Rewrite `CONTRIBUTING.md` for the current workflow (doc → `/sync-docs` → PR → main).
 - [x] Add this `PLAN.md`.
-- [ ] User, on GitHub **before merging**: Settings → Environments → `github-pages` → deployment
+- [x] User, on GitHub **before merging**: Settings → Environments → `github-pages` → deployment
       branches: allow `main` (it currently allows `v2`). Check Settings → Pages: source = GitHub Actions,
       custom domain = `docs.snt-toolbox.org`.
-- [ ] User: open PR into `main`, merge, check the Actions run and the live site
+- [x] User: open PR into `main`, merge, check the Actions run and the live site
       (expected: site up but nearly empty until step 5).
-- [ ] User, after merge: change nothing else in Pages; delete remote branches `v2` and `just-the-docs`.
+- [x] User, after merge: change nothing else in Pages; delete remote branches `v2` and `just-the-docs`.
 
 > Note: between merging step 1 and step 5 the live site is empty. Accepted (site not in use yet).
 
