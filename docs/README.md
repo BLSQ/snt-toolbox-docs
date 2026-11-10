@@ -76,3 +76,14 @@ npm run docs:build
 - The output uses plain HTML+CSS and a CSS-only mobile hamburger menu for the sidebar.
 - The generator script lives in `docs/scripts/build-docs.mjs`.
 
+## Licence
+
+Copyright © 2026 Bluesquare.
+
+- **Code** (the generator, templates, CSS, workflows and other tooling) is licensed under the
+  **MIT License**: see [`LICENSE`](../LICENSE).
+- **Documentation content** (the Markdown pages and images in `docs/src/`, and the site built
+  from them) is licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)**:
+  see [`LICENSE-docs`](../LICENSE-docs).
+- Logos and trademarks (such as `docs/src/assets/logo.svg`) are covered by neither licence.
+
