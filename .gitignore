@@ -1,0 +1,8 @@
+.DS_Store
+
+# Generated documentation output (built in CI)
+docs/build/
+
+# Node
+node_modules/
+
