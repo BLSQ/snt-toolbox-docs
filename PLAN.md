@@ -70,7 +70,8 @@ then pick up the first unchecked step.
 - [x] Remove `docs/src/assets/<lang>/` images; keep `logo.svg`.
 - [x] Update `CLAUDE.md` (folder map), `CONTRIBUTING.md` (new "Images" section: workspace access and CLI
       key needed to sync), `docs/README.md`.
-- [ ] User: commit, PR, merge; check the live site's images.
+- [x] User: commit, PR, merge; check the live site's images. Done 2026-11-19: merged, images show on the
+      live site.
 
 ### Step 4b — Guardrails: no content published without approval
 
