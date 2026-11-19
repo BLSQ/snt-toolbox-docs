@@ -55,15 +55,21 @@ then pick up the first unchecked step.
       if missing. Never overwrites (stops if a name exists with another size) or deletes uploaded files.
 - [x] `SKILL.md`: "Before you start" (workspace key), image behaviour, `curl` check, report and git commands.
 - [x] Test on a scratch copy of the repo; ask before the real uploads.
-- [ ] User: commit, PR (with step 2), merge.
+- [x] User: committed. Steps 2, 3 and 4 go in one PR (user's choice).
 
 ### Step 4 — Migrate the existing images
 
-- [ ] Run `/sync-docs`: pages now point at OpenHEXA URLs; check every image loads (HTTP 200 after the
-      redirect) and the local build shows them.
-- [ ] Remove `docs/src/assets/<lang>/` images (user runs `git rm`); keep `logo.svg`.
-- [ ] Update `CLAUDE.md` (folder map), `CONTRIBUTING.md` (workspace access and CLI key needed to sync),
-      `docs/README.md` if it mentions image folders.
+- Done 2026-11-19, **without new content**: the doc had changes still awaiting official review, so the
+  9 published pages were kept as they are and only their image links were rewritten to the OpenHEXA URLs
+  (content hash of each old PNG). Their text is identical to before. All 17 images are uploaded (a full
+  `/sync-docs` dry run and run uploaded 15 of them; the content it wrote was then discarded). The 17 PNGs
+  are removed from `docs/src/assets/en/`. The next content sync needs the user's explicit approval.
+
+- [x] Point the pages at OpenHEXA URLs; check every image loads (HTTP 200 after the redirect) and the
+      local build shows them.
+- [x] Remove `docs/src/assets/<lang>/` images; keep `logo.svg`.
+- [x] Update `CLAUDE.md` (folder map), `CONTRIBUTING.md` (new "Images" section: workspace access and CLI
+      key needed to sync), `docs/README.md`.
 - [ ] User: commit, PR, merge; check the live site's images.
 
 ### Step 5 (optional) — Guard against images coming back

@@ -47,7 +47,7 @@ Local preview routine: `npm ci`, then `npm run docs:serve`, then open http://loc
 | Path | What it is |
 |------|------------|
 | `docs/src/<lang>/` | Generated Markdown pages, one per doc tab (do not edit) |
-| `docs/src/assets/` | `logo.svg`; synced images in `docs/src/assets/<lang>/` (do not edit) |
+| `docs/src/assets/` | `logo.svg`. Page images live in the OpenHEXA workspace `snt-toolbox-docs` (ADR 0006) |
 | `docs/src/private/` | Internal notes, ignored by the build |
 | `docs/templates/` | HTML template and CSS of the site |
 | `docs/scripts/build-docs.mjs` | The site generator |

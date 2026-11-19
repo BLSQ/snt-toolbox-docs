@@ -58,7 +58,7 @@ One cost line per net, using a real unit and the number of people per net as con
 
 Set the deployment years of the rule to the campaign years (e.g. 2027 and 2030), so the campaign is only costed in those years.
 
-![ITN campaign cost line in SNT Explorer](../assets/en/setting-up-the-budget-df12c5a6.png)
+![ITN campaign cost line in SNT Explorer](https://api.openhexa.org/files/snt-toolbox-docs/public/images/bcec401cdd4f2a6e.png)
 
 ## Example 2: Routine ITN distribution, as a ballpark estimate
 
@@ -75,7 +75,7 @@ When detailed costing is not yet available, a cost line can use a generic unit (
 
 For a district with 4,000 live births, the EPI line costs 4,000 × 1 × 1 × $3.48 = $13,920. The estimate can be refined later, for example with separate lines for procurement and distribution.
 
-![Routine ITN cost lines in SNT Explorer](../assets/en/setting-up-the-budget-fbb5666a.png)
+![Routine ITN cost lines in SNT Explorer](https://api.openhexa.org/files/snt-toolbox-docs/public/images/813bf3b35f7d4ea6.png)
 
 ## Example 3: SMC and PMC
 
@@ -94,7 +94,7 @@ For 20,000 children aged 1–5 years: 20,000 × 1 × 4 × 1.1 = 88,000 co-bliste
 
 Where the number of cycles differs between areas (3, 4 or 5), set the conversion factor in each rule in the scenario page rather than on the cost line. A rule for districts with a longer season can then use 5 cycles, while another uses 4.
 
-![SMC and PMC cost lines in SNT Explorer](../assets/en/setting-up-the-budget-29ebf9ac.png)
+![SMC and PMC cost lines in SNT Explorer](https://api.openhexa.org/files/snt-toolbox-docs/public/images/0d0f084f25949567.png)
 
 ## Example 4: Malaria vaccine (R21)
 
@@ -111,7 +111,7 @@ The unit is the vaccine dose. The four-dose schedule is split over two lines by 
 
 For 5,000 infants: 5,000 × 1 × 3 × 1.1 = 16,500 doses, costing $49,335.
 
-![Malaria vaccine cost lines in SNT Explorer](../assets/en/setting-up-the-budget-ae83d628.png)
+![Malaria vaccine cost lines in SNT Explorer](https://api.openhexa.org/files/snt-toolbox-docs/public/images/9dd049544907e759.png)
 
 ## Example 5: a fixed cost
 

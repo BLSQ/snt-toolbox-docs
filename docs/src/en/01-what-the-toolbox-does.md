@@ -8,7 +8,7 @@ This page describes which parts of the SNT process the toolbox covers, from data
 
 OpenHEXA covers data assembly and analysis (WHO SNT steps 1–3). SNT Explorer covers situation analysis maps, stratification, intervention targeting, budgeting and scenario comparison (steps 3–8). Impact forecasting (step 6) comes from modelling partners and is shown in SNT Explorer.
 
-![Screenshot 2026-11-09 at 11.20.27.png](../assets/en/what-the-toolbox-does-e9616bbd.png)
+![Screenshot 2026-11-09 at 11.20.27.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/7e87fa825a0a6eb2.png)
 
 ## What data goes in, and how does it get there?
 
@@ -69,7 +69,7 @@ For each intervention, users set the rules that make a district eligible: which 
 
 An AI assistant can help build the plan. Users describe the rules in plain language, or upload documents such as the NSP, GC8 documents or the WHO SNT manual, and the assistant proposes scenario rules that the user reviews and adjusts. It can also help import existing NSP or GC8 scenarios into SNT Explorer, so they can be compared with new ones.
 
-![Screenshot 2026-11-09 at 12.11.16.png](../assets/en/what-the-toolbox-does-1c0662f8.png)
+![Screenshot 2026-11-09 at 12.11.16.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/699334f73bda1a12.png)
 
 ## How are costs calculated?
 

@@ -34,7 +34,7 @@ Districts are selected with criteria, by hand, or both. A district must meet eve
 
 Add one or more interventions to the rule, at most one per category. They are assigned to all districts the rule selects.
 
-![Screenshot 2026-11-09 at 13.56.38.png](../assets/en/building-a-scenario-a79a8160.png)
+![Screenshot 2026-11-09 at 13.56.38.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/df4481d428257b51.png)
 
 ### Set how the interventions are deployed
 
@@ -42,15 +42,15 @@ In the Overrides view, each intervention of the rule has its own card. There you
 
 **Example: lower coverage for routine nets.** In cost management, the Dual AI routine lines have a coverage of 100%. For this rule, coverage of both the procurement and operational lines is lowered to 80%, for all years. The overridden fields are highlighted; the other values still come from the global cost settings.
 
-![Screenshot 2026-11-09 at 13.57.56.png](../assets/en/building-a-scenario-cd0e2ca8.png)
+![Screenshot 2026-11-09 at 13.57.56.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/db71c5188cd834f3.png)
 
 **Example: SMC with 3 cycles.** In cost management, the SPAQ lines use 4 co-blisters per child (4 cycles). In this scenario, SMC is planned with 3 cycles, so the conversion factor of both SPAQ lines is overridden to 3 for this rule. The changed values are highlighted, and *Revert line* brings back the default.
 
-![Screenshot 2026-11-09 at 14.24.08.png](../assets/en/building-a-scenario-6959a8e7.png)
+![Screenshot 2026-11-09 at 14.24.08.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/a3e8eaa4227cfb2b.png)
 
 **Example: a campaign once every three years.** Under *Yearly deployment*, clicking a year toggles it on or off. Here the Dual AI campaign is only deployed in 2029, so it is costed in 2029 and coverage is 0% in the other years of the plan.
 
-![Screenshot 2026-11-09 at 14.24.52.png](../assets/en/building-a-scenario-1b6d7c30.png)
+![Screenshot 2026-11-09 at 14.24.52.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/be244f2806998eb0.png)
 
 ## Rule priority and overlapping rules
 
@@ -63,15 +63,15 @@ The three screenshots below show this with two rules for routine ITNs, whose net
 
 1. **No overlap.** Dual AI nets where PfPR is above 60%, PBO nets where it is 60% or below. Each district matches only one rule, so the order does not matter: every district receives one net type.
 
-![Screenshot 2026-11-09 at 14.10.32.png](../assets/en/building-a-scenario-683d2e52.png)
+![Screenshot 2026-11-09 at 14.10.32.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/427c8a6caa785822.png)
 
 2. **Overlap, PBO overwrites Dual AI.** The Dual AI rule (PfPR above 60%) is above the PBO rule (PfPR above 80%). Dual AI is first assigned to all districts above 60%; the PBO rule, lower in the list, then overwrites it where PfPR is above 80%. Result: PBO nets above 80% and Dual AI nets between 60% and 80%.
 
-![Screenshot 2026-11-09 at 14.22.00.png](../assets/en/building-a-scenario-7dc40042.png)
+![Screenshot 2026-11-09 at 14.22.00.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/efd58451ccff80ab.png)
 
 3. **Overlap, Dual AI overwrites PBO.** The same rules, with the PBO rule dragged above the Dual AI rule. PBO is first assigned to districts above 80%; the Dual AI rule, now lower in the list, then overwrites it in all districts above 60%. Result: Dual AI nets in every district above 60%, no PBO nets anywhere, and no routine nets at 60% or below.
 
-![Screenshot 2026-11-09 at 14.09.38.png](../assets/en/building-a-scenario-1c0218ea.png)
+![Screenshot 2026-11-09 at 14.09.38.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/a2e348ee0e18dfa0.png)
 
 ## Fine-tuning beyond eligibility
 
@@ -93,4 +93,4 @@ The assistant can also build a scenario from WHO recommendations. For example, a
 
 Scenarios are compared side by side on their intervention maps, budgets and, where model outputs are available, modelled impact (cases, severe cases, prevalence reduction, cumulative cost). A scenario can be exported as a CSV file with one row per district and one column per intervention.
 
-![Screenshot 2026-11-09 at 14.30.31.png](../assets/en/building-a-scenario-67f2aaf1.png)
+![Screenshot 2026-11-09 at 14.30.31.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/caf575662235de3d.png)
