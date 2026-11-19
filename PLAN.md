@@ -39,18 +39,23 @@ then pick up the first unchecked step.
 ### Step 2 — ADR 0006 and this plan
 
 - [x] `docs/adr/0006-images-in-openhexa-public-folder.md`, ADR index, this `PLAN.md`, backlog item removed.
-- [ ] User: commit, PR, merge.
+- [x] User: committed 2026-11-19. Steps 2 and 3 go in one PR (user's choice).
 
 ### Step 3 — `/sync-docs` uploads images
 
-- [ ] `sync.mjs`: for each image, hash the bytes, check whether `public/images/<name>` exists, upload it
-      if not, and write the absolute URL into the Markdown. Stop writing to `docs/src/assets/<lang>/`.
-      Read the API key from `~/.openhexa.ini` (or an env variable override); fail with a clear message
-      if it is missing. Never overwrite or delete uploaded files.
-- [ ] `SKILL.md`: update the image steps, the report (images uploaded / already there) and the
-      git commands it hands over.
-- [ ] Test on a scratch copy of the repo; ask before the real uploads.
-- [ ] User: commit, PR, merge.
+- Done 2026-11-19. Tested on a scratch copy with a one-page manifest: dry run, missing and wrong key
+  (clear errors, nothing written), real run (2 images uploaded, 17 local images removed), second run
+  (nothing uploaded, page unchanged), `curl` (200 `image/png`, same SHA-256), build (`<img>` points at
+  OpenHEXA). The 2 test images, `public/images/bcec401cdd4f2a6e.png` and `813bf3b35f7d4ea6.png`, are real
+  synced screenshots and were kept: the migration will find them already there.
+
+- [x] `sync.mjs`: for each image, hash the bytes, check whether `public/images/<name>` exists, upload it
+      if not, and write the absolute URL into the Markdown. Stop writing to `docs/src/assets/<lang>/`
+      (leftover files there are removed). API key from `OPENHEXA_TOKEN` or `~/.openhexa.ini`; clear error
+      if missing. Never overwrites (stops if a name exists with another size) or deletes uploaded files.
+- [x] `SKILL.md`: "Before you start" (workspace key), image behaviour, `curl` check, report and git commands.
+- [x] Test on a scratch copy of the repo; ask before the real uploads.
+- [ ] User: commit, PR (with step 2), merge.
 
 ### Step 4 — Migrate the existing images
 
