@@ -15,14 +15,6 @@ as a step (and remove it from here).
   in tabs "What the toolbox does", 4 and 6 is plain text, not a tab link, so it is not a link on the site.
 - **Diagrams on the site.** The export drops widgets, so Home's "Main workflow" diagram is missing.
   Options: an image of it in the doc, or teaching `/sync-docs` to render widgets.
-- **Images out of the repo.** The 17 synced screenshots are 13 MB of PNG, and git keeps every version
-  forever, so compressing or resizing only postpones the problem. Recommended: external storage (S3,
-  Cloudflare R2 or GCS, public URL or CDN); `/sync-docs` uploads each image under a content-hash name
-  (re-syncs never re-upload) and writes the URL into the Markdown. Open question: PR preview builds would
-  show live images, not the PR's. Rejected: Git LFS (small paid GitHub quotas, setup per contributor).
-  To check: whether the Claude Doc's own image URLs are public and stable. Meanwhile, a CI check could
-  fail on images over a size limit. Images already in git history stay unless history is rewritten
-  (a separate, deliberate decision).
 - **Restrict merges to `main` to Bluesquare.** A push to `main` deploys the site. Add a ruleset on
   `main`: PR required, at least 1 approval, build check passing, no force-push or deletion, admin-only
   bypass. Who can merge comes from repo permissions: a Bluesquare org team (e.g. `blsq-docs-maintainers`,
