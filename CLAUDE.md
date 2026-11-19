@@ -20,6 +20,11 @@ GitHub Pages on every push to `main`.
   `show`, `branch`, `fetch`) is fine. Committing, pushing, merging, branching, PRs and destructive
   commands are done by the user. At the end of a task, hand over the exact commands: the
   `git add` file list, the commit message, and the PR title and description.
+- **Content is published only with the user's explicit approval.** The doc may hold text still under
+  review, and this repo is public. Structural work (the sync skill, images, the generator, templates, CI)
+  must not change `docs/src/<lang>/`: test it on a scratch copy of the repo or with `sync.mjs --dry-run`.
+  A real `/sync-docs` runs only when the user starts it and approves the dry-run summary. A plan step
+  that says "run /sync-docs" is not that approval: stop and ask.
 - Never stage or edit anything under `ignore/`.
 - Never edit `docs/build/`: it is generated output.
 - Before claiming a change works, run `npm run docs:build` and check its output.

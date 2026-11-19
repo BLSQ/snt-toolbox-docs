@@ -23,6 +23,11 @@
       "Bash(npm install)",
       "Bash(npm run docs:build)"
     ],
+    "ask": [
+      "Bash(node .claude/skills/sync-docs/sync.mjs *)",
+      "Bash(node ./.claude/skills/sync-docs/sync.mjs *)",
+      "Bash(node */.claude/skills/sync-docs/sync.mjs *)"
+    ],
     "deny": [
       "Bash(git commit *)",
       "Bash(git push *)",

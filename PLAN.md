@@ -72,6 +72,16 @@ then pick up the first unchecked step.
       key needed to sync), `docs/README.md`.
 - [ ] User: commit, PR, merge; check the live site's images.
 
+### Step 4b — Guardrails: no content published without approval
+
+- Done 2026-11-19, after step 4 nearly published unreviewed doc content.
+- [x] `SKILL.md`: `disable-model-invocation: true` (only a person starts `/sync-docs`); `sync.mjs`
+      removed from `allowed-tools`; dry run, summary and an explicit "publish?" question before the real run.
+- [x] `.claude/settings.json`: `ask` rule for `sync.mjs`, so every run prompts.
+- [x] `CLAUDE.md` rule and `CONTRIBUTING.md` step 2: structural work never changes `docs/src/<lang>/`.
+- [ ] User: commit; then in a new Claude Code session check `/permissions` shows the `ask` rules and
+      that Claude cannot start `/sync-docs` on its own.
+
 ### Step 5 (optional) — Guard against images coming back
 
 - [ ] CI check that fails the build when a PR adds an image under `docs/src/` (or over a size limit).

@@ -2,7 +2,8 @@
 name: sync-docs
 description: Regenerate the site's Markdown pages and images from the Claude Doc "SNT Toolbox documentation" (the single source of truth), then build the site. Use when the user runs /sync-docs or asks to sync, pull or refresh the docs content from the Claude Doc.
 argument-hint: "[lang] [doc link]   (default: en + the SNT Toolbox documentation doc)"
-allowed-tools: Bash(node .claude/skills/sync-docs/sync.mjs *), Bash(npm run docs:build), Bash(curl -sL *), mcp__claude_ai_Claude_Docs__read, mcp__claude_ai_Claude_Docs__export
+disable-model-invocation: true
+allowed-tools: Bash(npm run docs:build), Bash(curl -sL *), mcp__claude_ai_Claude_Docs__read, mcp__claude_ai_Claude_Docs__export
 ---
 
 # /sync-docs
@@ -12,6 +13,12 @@ Rewrites `docs/src/<lang>/` from a Claude Doc: one tab = one page. Images are no
 and the pages link to them there.
 You gather what the Claude Docs connector returns; `sync.mjs` (next to this file) writes the files,
 so the output is the same every run. **Never commit, push or branch**: the user reviews and commits.
+
+**Publishing content needs the user's explicit approval.** The doc may hold text that is still under
+review, and this repo is public. Only a person starts this skill (`disable-model-invocation`), and even
+then the real run happens only after the user has seen the dry-run summary (step 5) and said yes. Never
+run a real sync as part of other work (changes to this skill, images, the build or CI): test those on a
+scratch copy of the repo or with `--dry-run`.
 
 ## Before you start
 
@@ -103,11 +110,30 @@ Write `WORK/manifest.json`:
 }
 ```
 
-List **every** tab: pages whose tab is not in the manifest are deleted. Then, from the repo root:
+List **every** tab: pages whose tab is not in the manifest are deleted. Then, from the repo root,
+**dry run first**:
+
+```bash
+node .claude/skills/sync-docs/sync.mjs WORK/manifest.json --dry-run
+```
+
+Show the user, and **stop until they say yes**:
+
+- tabs added, removed or renamed, and pages renumbered;
+- for each page whose text would change, a short summary of what changes (decode the tab's `.b64` and
+  compare it with the current page; ignore changes to image links only);
+- images to upload, and anything under "Did not convert cleanly".
+
+Ask in plain words: "Publish this content to the site's source? (the repo is public)". Only after a clear
+yes, run the real sync:
 
 ```bash
 node .claude/skills/sync-docs/sync.mjs WORK/manifest.json
 ```
+
+If the user says no, or wants only some pages, write nothing and stop; tell them that a partial sync is
+not supported yet. Both commands ask for permission (`.claude/settings.json`); that prompt is a second
+check, not the approval itself.
 
 It names each image by its content (`<first 16 hex of SHA-256>.<ext>`), uploads it to
 `public/images/` in the OpenHEXA workspace if it is not there yet (never overwrites, never deletes), then
