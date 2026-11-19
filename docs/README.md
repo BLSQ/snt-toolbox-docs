@@ -21,8 +21,9 @@ Use `PORT=8080 npm run docs:serve` to pick another port. To only build without s
 - **Languages**: each folder directly under `docs/src/` that contains at least one Markdown page is a language
   (today: `docs/src/en/`). Folders such as `docs/src/fr/` are picked up automatically once they contain pages.
 - **Private (not built)**: `docs/src/private/`
-- **Shared static assets**: `docs/src/assets/` (`logo.svg`). Page images are synced from the Claude Doc into
-  `docs/src/assets/<lang>/` by `/sync-docs`, which owns that folder: it deletes images no page uses.
+- **Shared static assets**: `docs/src/assets/` (`logo.svg`). Page images are not in the repo: `/sync-docs`
+  uploads them to the OpenHEXA workspace `snt-toolbox-docs` and the pages link to them there (ADR 0006).
+  So a local build shows page images only with a network connection.
 
 Files and folders whose name starts with `_` or `.` are ignored by the build, as is `private/`.
 Use `_` for drafts you want to keep in the tree without publishing them.
@@ -97,8 +98,8 @@ Copyright © 2026 Bluesquare.
 
 - **Code** (the generator, templates, CSS, workflows and other tooling) is licensed under the
   **MIT License**: see [`LICENSE`](../LICENSE).
-- **Documentation content** (the Markdown pages and images in `docs/src/`, and the site built
-  from them) is licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)**:
+- **Documentation content** (the Markdown pages in `docs/src/`, the images they link to, and the
+  site built from them) is licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)**:
   see [`LICENSE-docs`](../LICENSE-docs).
 - Logos and trademarks (such as `docs/src/assets/logo.svg`) are covered by neither licence.
 

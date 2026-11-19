@@ -13,3 +13,4 @@ and mark the old one "superseded by NNNN".
 | [0003](0003-page-order-from-filename-prefix.md) | Page order comes from a numeric filename prefix | accepted |
 | [0004](0004-english-first.md) | English only for now; French later | open |
 | [0005](0005-minimal-ui-until-redesign.md) | Minimal UI changes until a redesign with the Bluesquare design system | accepted |
+| [0006](0006-images-in-openhexa-public-folder.md) | Images are hosted in an OpenHEXA public folder, not in git | accepted |

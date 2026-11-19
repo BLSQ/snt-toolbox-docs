@@ -15,15 +15,28 @@ To change the documentation, edit the Claude Doc.
 ## Publishing changes
 
 1. **Edit the Claude Doc.** One tab = one page on the site. Tab order = page order; the first tab is the home page.
-2. **Sync.** From the repo root, in Claude Code, run `/sync-docs`. It reads the doc and rewrites
-   `docs/src/en/` and `docs/src/assets/en/`, then builds the site and lists what did not convert
-   cleanly (for example charts and diagrams, which cannot be exported yet). It never commits.
+2. **Sync.** Once the doc's content is approved for publication, run `/sync-docs` from the repo root,
+   in Claude Code. It reads the doc and first shows a summary of what would change (pages added,
+   removed or changed, images to upload), and asks before writing anything. On your yes, it uploads new
+   images to OpenHEXA (see below), rewrites `docs/src/en/`, then builds the site and lists what did not
+   convert cleanly (for example charts and diagrams, which cannot be exported yet). It never commits.
+   Only a person can start `/sync-docs`; Claude does not run it on its own.
 3. **Review locally.** Check the changed files (`git diff`) and preview the site (see below).
 4. **Open a pull request into `main`.** GitHub Actions builds the site to check it, but does not deploy it.
 5. **Merge.** Every push to `main` builds the site and deploys it to GitHub Pages.
    A deploy can also be started by hand from the Actions tab (*Run workflow*).
 
 `main` is the only long-lived branch.
+
+## Images
+
+Images are not stored in this repository (ADR 0006). `/sync-docs` uploads them to the public folder of
+the OpenHEXA workspace `snt-toolbox-docs` (app.openhexa.org), named by their content, and the pages link
+to `https://api.openhexa.org/files/snt-toolbox-docs/public/images/<name>`. Uploaded images are never
+overwritten or deleted, so older versions of the site keep working.
+
+To sync, you need editor access to that workspace and its API key in the `openhexa` CLI: run
+`openhexa workspaces add snt-toolbox-docs` once (the key is on the workspace's Pipelines page).
 
 ## Building locally
 
@@ -41,7 +54,6 @@ Then open `docs/build/index.html` in a browser.
 | Path | What it is |
 |------|------------|
 | `docs/src/<lang>/` | Generated Markdown pages (do not edit) |
-| `docs/src/assets/<lang>/` | Images used by the pages (generated, do not edit) |
 | `.claude/skills/sync-docs/` | The `/sync-docs` skill and its script |
 | `docs/templates/` | HTML template and CSS of the site |
 | `docs/scripts/build-docs.mjs` | The site generator |

@@ -25,7 +25,7 @@ The data do not need to be prepared by hand. Give an AI assistant such as Claude
 3. **Details.** Enter a name, a data key and a category; description, units and unit symbol are optional. The category is the group the layer appears in. Tick *Is population* if the layer holds target population estimates and needs to be used for calculating budgets.
 4. **Data.** Download the CSV template, fill it in (or ask Claude/ChatGPT to do it for you) and import it. The table then shows the values per district and year, and how many are filled. Values can still be corrected in the table, pasted per year column, or completed with an extra year (*Add year*).
 
-![Data step: imported values per district and year](../assets/en/importing-and-reviewing-data-8a9565db.png)
+![Data step: imported values per district and year](https://api.openhexa.org/files/snt-toolbox-docs/public/images/8452510381714322.png)
 
 5. **Legend.** Choose the legend type (for example *Threshold*), then set the breaks and colours. The map on the right previews the layer, by year. Click **Create layer** to add it to its category.
 
@@ -37,7 +37,7 @@ Three legend types are available:
 | Ordinal | Groups non-numeric or fixed values (e.g. low, medium, high, or 1, 2, 3) |
 | Linear | Shows values on a continuous colour gradient between a minimum and a maximum |
 
-![Legend step with map preview](../assets/en/importing-and-reviewing-data-4f1f57c5.png)
+![Legend step with map preview](https://api.openhexa.org/files/snt-toolbox-docs/public/images/53f5e81718b259d3.png)
 
 ## Reviewing the data
 
@@ -45,4 +45,4 @@ Click a layer in the **Data Layers** panel to show it on the main map. To compar
 
 To change how a layer is shown, click the three dots (⋯) next to it and edit its legend: breaks, colours and legend type, as in the Legend step when creating a layer.
 
-![Screenshot 2026-11-09 at 14.44.31.png](../assets/en/importing-and-reviewing-data-a5444a3a.png)
+![Screenshot 2026-11-09 at 14.44.31.png](https://api.openhexa.org/files/snt-toolbox-docs/public/images/f96719934ec0b644.png)

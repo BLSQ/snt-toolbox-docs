@@ -18,14 +18,27 @@
 //   }]
 // }
 // `images` and `refs` are listed in document order.
+//
+// Images are not stored in the repo (ADR 0006): each one is uploaded to the public folder of the
+// OpenHEXA workspace `snt-toolbox-docs` as `public/images/<first 16 hex of its SHA-256>.<ext>`,
+// only if that file is not there yet, and pages link to its public URL. Uploaded files are never
+// overwritten or deleted. The workspace API key comes from OPENHEXA_TOKEN, or else from the
+// `openhexa` CLI config (~/.openhexa.ini, section [workspaces]); the API URL from OPENHEXA_URL, or
+// else the CLI config, or else https://api.openhexa.org. --dry-run checks which images exist but
+// uploads and writes nothing.
 
+import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const SRC = path.join(REPO, "docs", "src");
 const HEADER_RE = /^<!-- Generated from the Claude Doc ".*", tab ".*"\. Do not edit here\. -->/;
+const WORKSPACE = "snt-toolbox-docs";
+const IMAGE_DIR = "images/"; // inside the workspace's public folder
+const CONTENT_TYPES = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".webp": "image/webp" };
 
 const [manifestPath, ...flags] = process.argv.slice(2);
 const dryRun = flags.includes("--dry-run");
@@ -77,8 +90,87 @@ for (const [i, t] of tabs.entries()) {
 }
 const byId = new Map(tabs.map((t) => [t.id, t]));
 
+// --- OpenHEXA ---------------------------------------------------------------------------------
+
+async function openhexaSettings() {
+  const ini = await fs.readFile(path.join(os.homedir(), ".openhexa.ini"), "utf8").catch(() => "");
+  const sections = {};
+  let current = null;
+  for (const line of ini.split(/\r?\n/)) {
+    const sec = /^\s*\[([^\]]+)\]\s*$/.exec(line);
+    if (sec) current = sections[sec[1].trim()] ??= {};
+    const kv = /^\s*([^=:#;\s][^=:]*?)\s*[=:]\s*(.*?)\s*$/.exec(line);
+    if (kv && current && !sec) current[kv[1]] = kv[2];
+  }
+  const token = process.env.OPENHEXA_TOKEN || sections.workspaces?.[WORKSPACE];
+  const url = (process.env.OPENHEXA_URL || sections.openhexa?.url || "https://api.openhexa.org").replace(/\/+$/, "");
+  if (!token) {
+    throw new Error(
+      `No API key for the OpenHEXA workspace "${WORKSPACE}". Run \`openhexa workspaces add ${WORKSPACE}\` ` +
+        `(needs editor access to the workspace), or set OPENHEXA_TOKEN.`,
+    );
+  }
+  return { token, url };
+}
+
+const hexa = await openhexaSettings();
+
+async function gql(query, variables) {
+  const res = await fetch(`${hexa.url}/graphql/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${hexa.token}` },
+    body: JSON.stringify({ query, variables }),
+  });
+  if (!res.ok) throw new Error(`OpenHEXA API: HTTP ${res.status}`);
+  const body = await res.json();
+  if (body.errors?.length) throw new Error(`OpenHEXA API: ${body.errors.map((e) => e.message).join("; ")}`);
+  return body.data;
+}
+
+const { workspace } = await gql(
+  `query($s: String!) { workspace(slug: $s) { publicFiles { url folderExists } permissions { managePublicFiles } } }`,
+  { s: WORKSPACE },
+);
+if (!workspace) throw new Error(`OpenHEXA workspace "${WORKSPACE}" not found, or the API key has no access to it.`);
+if (!workspace.publicFiles?.folderExists) throw new Error(`The public folder of "${WORKSPACE}" is not enabled.`);
+const publicBase = workspace.publicFiles.url.replace(/\/?$/, "/");
+
+async function remoteSize(key) {
+  const d = await gql(`query($s: String!, $k: String!) { workspace(slug: $s) { bucket { object(key: $k) { size } } } }`, {
+    s: WORKSPACE,
+    k: key,
+  });
+  const o = d.workspace.bucket.object;
+  return o ? Number(o.size) : null;
+}
+
+async function upload(key, bytes, contentType) {
+  const d = await gql(
+    `mutation($i: PrepareObjectUploadInput!) { prepareObjectUpload(input: $i) { success errors uploadUrl headers } }`,
+    { i: { workspaceSlug: WORKSPACE, objectKey: key, contentType } },
+  );
+  const r = d.prepareObjectUpload;
+  if (!r.success) throw new Error(`Cannot upload ${key}: ${r.errors.join(", ")}`);
+  const res = await fetch(r.uploadUrl, { method: "PUT", headers: { ...(r.headers ?? {}), "Content-Type": contentType }, body: bytes });
+  if (!res.ok) throw new Error(`Upload of ${key} failed: HTTP ${res.status}`);
+  if ((await remoteSize(key)) !== bytes.length) throw new Error(`Upload of ${key}: size check failed`);
+}
+
+// Name each image by its content, before the pages are converted.
+for (const t of tabs) {
+  for (const img of t.images ?? []) {
+    const ext = path.extname(img.file).toLowerCase() || ".png";
+    if (!CONTENT_TYPES[ext]) throw new Error(`${t.name}: unsupported image type ${ext} (${img.file})`);
+    img.bytes = await fs.readFile(img.file);
+    img.name = createHash("sha256").update(img.bytes).digest("hex").slice(0, 16) + ext;
+    img.contentType = CONTENT_TYPES[ext];
+  }
+}
+
+// --- Pages ------------------------------------------------------------------------------------
+
 const pages = new Map(); // file -> content
-const images = new Map(); // asset file name -> source path
+const images = new Map(); // image name -> { bytes, contentType }
 
 for (const t of tabs) {
   const raw = Buffer.from((await fs.readFile(path.join(workDir, t.b64), "utf8")).replace(/\s+/g, ""), "base64");
@@ -111,11 +203,9 @@ for (const t of tabs) {
   md = md.replace(/&#91;image: (.*?)\\\]/g, (all, alt) => {
     const img = t.images?.[n++];
     if (!img) return all;
-    const ext = path.extname(img.file).toLowerCase() || ".png";
-    const name = `${t.slug}-${img.asset.slice(0, 8)}${ext}`;
-    images.set(name, img.file);
+    images.set(img.name, img);
     if (/\.(png|jpe?g|gif|webp)$/i.test(alt.trim())) flag(t.name, `image alt text is a file name: "${alt}" (write a description in the doc)`);
-    return `![${alt}](../assets/${lang}/${name})`;
+    return `![${alt}](${publicBase}${IMAGE_DIR}${img.name})`;
   });
   if (n !== (t.images?.length ?? 0)) {
     throw new Error(`${t.name}: ${n} image placeholders in the export, ${t.images?.length ?? 0} in the manifest`);
@@ -149,12 +239,22 @@ for (const t of tabs) {
   pages.set(t.file, `${header}\n\n# ${t.name}\n\n${md.trim()}\n`);
 }
 
-// Compare with what is on disk, then write.
-const report = { written: [], unchanged: [], deleted: [], images: { written: [], unchanged: [], deleted: [] } };
+const report = { written: [], unchanged: [], deleted: [], images: { uploaded: [], present: [], localRemoved: [] } };
 const readOr = (p) => fs.readFile(p).catch(() => null);
 
-if (!dryRun) await fs.mkdir(assetDir, { recursive: true });
+// Upload missing images first, so no page ever links to an image that is not there.
+for (const [name, img] of images) {
+  const key = `public/${IMAGE_DIR}${name}`;
+  const size = await remoteSize(key);
+  if (size === img.bytes.length) report.images.present.push(name);
+  else if (size !== null) throw new Error(`${key} exists with another size (${size} bytes, expected ${img.bytes.length}). Not overwriting it.`);
+  else {
+    report.images.uploaded.push(name);
+    if (!dryRun) await upload(key, img.bytes, img.contentType);
+  }
+}
 
+// Compare pages with what is on disk, then write.
 for (const [file, content] of pages) {
   const p = path.join(langDir, file);
   const old = await readOr(p);
@@ -174,19 +274,11 @@ for (const ent of await fs.readdir(langDir, { withFileTypes: true })) {
   }
 }
 
-for (const [name, from] of images) {
-  const p = path.join(assetDir, name);
-  const [src, old] = [await fs.readFile(from), await readOr(p)];
-  if (old && Buffer.compare(src, old) === 0) report.images.unchanged.push(name);
-  else {
-    report.images.written.push(name);
-    if (!dryRun) await fs.writeFile(p, src);
-  }
-}
-// docs/src/assets/<lang>/ belongs to the sync: anything no page uses goes.
+// docs/src/assets/<lang>/ belongs to the sync. Images used to be copied there; pages no longer
+// link to it, so anything left over goes.
 for (const ent of await fs.readdir(assetDir, { withFileTypes: true }).catch(() => [])) {
-  if (ent.isFile() && !images.has(ent.name)) {
-    report.images.deleted.push(ent.name);
+  if (ent.isFile()) {
+    report.images.localRemoved.push(ent.name);
     if (!dryRun) await fs.unlink(path.join(assetDir, ent.name));
   }
 }
@@ -196,8 +288,8 @@ console.log(`${dryRun ? "[dry run] " : ""}Synced ${pages.size} tabs of "${docNam
 list("Pages written", report.written);
 list("Pages unchanged", report.unchanged);
 list("Pages deleted", report.deleted);
-list("Images written", report.images.written);
-list("Images unchanged", report.images.unchanged);
-list("Images deleted", report.images.deleted);
+list(`Images ${dryRun ? "to upload" : "uploaded"} to ${publicBase}${IMAGE_DIR}`, report.images.uploaded);
+list("Images already there", report.images.present);
+list(`Local images removed from docs/src/assets/${lang}/`, report.images.localRemoved);
 list("Notes", notesOut);
 list("Did not convert cleanly", flagsOut);
